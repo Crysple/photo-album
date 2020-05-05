@@ -16,10 +16,21 @@ Resources:
       Description: 'Lambda function for CD Demo'
       MemorySize: 128
       Timeout: 30
-      Role: 'arn:aws:iam::409408139754:role/service-role/codepipeline_lambda-role-yuqyw2bl'
+      Role: 'arn:aws:iam::418888549033:role/service-role/lex-role-gsxpeog8'
       Environment:
         Variables:
           REGION: us-east-1
+      Events:
+        getAZsAPI:
+          Type: Api
+          Properties:
+            Path: /search
+            Method: get
+        getAZsAPI:
+          Type: Api
+          Properties:
+            Path: /upload
+            Method: put
   UPLOAD_LF:
     Type: 'AWS::Serverless::Function'
     Properties:
@@ -30,7 +41,7 @@ Resources:
       Description: 'Lambda function for CD Demo'
       MemorySize: 128
       Timeout: 30
-      Role: 'arn:aws:iam::409408139754:role/service-role/codepipeline_lambda-role-yuqyw2bl'
+      Role: 'arn:aws:iam::418888549033:role/service-role/lex-role-gsxpeog8'
       Events:
         S3Trigger:
           Type: S3
