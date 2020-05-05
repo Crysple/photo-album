@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: CD Demo Lambda
+Resources:
+  hw3photos:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: hw3photos
+  LEXlf:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: lex_lf
+      Handler: lex_lf.lambda_handler
+      Runtime: python3.7
+      CodeUri: .
+      Description: 'Lambda function for CD Demo'
+      MemorySize: 128
+      Timeout: 30
+      Role: 'arn:aws:iam::409408139754:role/service-role/codepipeline_lambda-role-yuqyw2bl'
+      Environment:
+        Variables:
+          REGION: us-east-1
+  UPLOAD_LF:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: upload_lf
+      Handler: upload_lf.lambda_handler
+      Runtime: python3.7
+      CodeUri: .
+      Description: 'Lambda function for CD Demo'
+      MemorySize: 128
+      Timeout: 30
+      Role: 'arn:aws:iam::409408139754:role/service-role/codepipeline_lambda-role-yuqyw2bl'
+      Events:
+        S3Trigger:
+          Type: S3
+          Properties:
+            Bucket:
+              Ref: hw3photos
+            Events: s3:ObjectCreated
+      Environment:
+        Variables:
+          REGION: us-east-1

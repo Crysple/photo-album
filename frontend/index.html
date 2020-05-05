@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- <script src="//code.jquery.com/jquery-1.11.1.min.js"></script> -->
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="https://cdn.shoelace.style/1.0.0-beta24/shoelace.css">
+
+
+
+  <script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+
+    <script
+      type="text/javascript"
+      src="lib/axios/dist/axios.standalone.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="lib/CryptoJS/rollups/hmac-sha256.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="lib/CryptoJS/rollups/sha256.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="lib/CryptoJS/components/hmac.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="lib/CryptoJS/components/enc-base64.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="lib/url-template/url-template.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="lib/apiGatewayCore/sigV4Client.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="lib/apiGatewayCore/apiGatewayClient.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="lib/apiGatewayCore/simpleHttpClient.js"
+    ></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/utils.js"></script>
+    <script type="text/javascript" src="apigClient.js"></script>
+
+    
+    <style>
+      .top-1 { margin-top:1em; }
+    </style>
+
+
+    <title>Album</title>
+  </head>
+
+  <body>
+    <div class="row justify-content-center">
+        <div class="jumbotron">
+            <h1 class="text-center">Album</h1>
+        </div>
+    </div>
+    <div class="row justify-content-center top-1">
+        <div class="col-sm-10 col-md-8 col-lg-6">
+          <form onsubmit="upload(event);">
+            <div class="form-group">
+              <input id="images" type="file" class="form-control" name="images" multiple>
+            </div>
+            <button id="submitBtn" type="submit" class="btn btn-primary float-right">Upload</button>
+          </form>
+        </div>
+    </div>
+    <div class="row justify-content-center top-1">
+        <div class="col-sm-10 col-md-8 col-lg-6">
+          <form onsubmit="submitForm(event);">
+            <div class="form-group">
+              <input id="labelBox" type="text" class="form-control" placeholder="Enter labels">
+            </div>
+            <button id="submitBtn" type="submit" class="btn btn-primary float-right">Search</button>
+          </form>
+          <button id="start-record-btn" class="button-l" title="Start Recording"><i class="fa fa-microphone"></i></button>
+<!--           <button id="pause-record-btn" title="Pause Recording">Pause Recognition</button> -->
+          <p id="recording-instructions">Press the <strong>Start Recognition</strong> button and allow access.</p>
+        </div>
+    </div>
+    <br>
+    <br>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div id="imageCol" class="col-sm-10 col-md-8 col-lg-6">
+      </div>
+      </div></div>
+
+
+    <script src="recognition.js"></script>
+    <script src="photo-album.js"></script>
+  </body>
+</html>
+
