@@ -2,10 +2,10 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: CD Demo Lambda
 Resources:
-  hw3photos_auto:
+  s3forhw3photo:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: hw3photos_auto
+      BucketName: s3forhw3photo
   hw3lf2:
     Type: 'AWS::Serverless::Function'
     Properties:
@@ -47,7 +47,7 @@ Resources:
           Type: S3
           Properties:
             Bucket:
-              Ref: hw3photos_auto
+              Ref: s3forhw3photo
             Events: s3:ObjectCreated:Put
       Environment:
         Variables:
