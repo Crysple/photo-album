@@ -8,6 +8,7 @@ Created on Thu Apr 30 21:19:35 2020
 
 
 import json
+import collections
 import logging
 import boto3
 logger = logging.getLogger()
