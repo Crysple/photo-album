@@ -20,6 +20,8 @@ Resources:
       Environment:
         Variables:
           REGION: us-east-1
+      Layers:
+        - arn:aws:lambda:us-east-1:418888549033:layer:aws4auth:1
       Events:
         getAZsAPI:
           Type: Api
@@ -42,6 +44,8 @@ Resources:
       MemorySize: 128
       Timeout: 30
       Role: 'arn:aws:iam::418888549033:role/service-role/lex-role-gsxpeog8'
+      Layers:
+        - arn:aws:lambda:us-east-1:418888549033:layer:aws4auth:1
       Events:
         S3Trigger:
           Type: S3
