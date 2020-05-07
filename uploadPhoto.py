@@ -1,12 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Apr 30 21:19:35 2020
-
-@author: zyy
-"""
-
-
 import json
 import logging
 import boto3
@@ -27,7 +18,7 @@ from datetime import datetime
 #     print(img, bucket, stamp_time)
 #     return bucket,img,stamp_time
 
-
+# get information from frontend
 def img_info(event):
 	s3 = boto3.client("s3")
 	# retrieving data from event
