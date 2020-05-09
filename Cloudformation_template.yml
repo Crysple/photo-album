@@ -1,0 +1,196 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  S3GHRepo:
+    Type: String
+    Default: "photo-album"
+
+  S3GHBranch:
+    Type: String
+    Default: "front-end"
+
+  S3GHToken:
+    Type: String
+    Default: ""
+
+  S3GHUser:
+    Type: String
+    Default: "Crysple"
+
+  LFGHRepo:
+    Type: String
+    Default: "photo-album"
+
+  LFGHBranch:
+    Type: String
+    Default: "master"
+
+  LFGHToken:
+    Type: String
+    Default: ""
+
+  LFGHUser:
+    Type: String
+    Default: "Crysple"
+
+Resources:
+  AdminRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - cloudformation.amazonaws.com
+                - codepipeline.amazonaws.com
+            Action:
+              - "sts:AssumeRole"
+      Path: /
+      Policies:
+        - PolicyName: admin
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: "*"
+                Resource: "*"
+
+  S3ForArtifact:
+    Type: "AWS::S3::Bucket"
+
+  S3Frontend:
+    Type: "AWS::S3::Bucket"
+
+  LFPipeline:
+    Type: "AWS::CodePipeline::Pipeline"
+    Properties:
+      RoleArn: !GetAtt AdminRole.Arn
+      ArtifactStore:
+        Type: S3
+        Location: !Ref S3ForArtifact
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: Source
+              ActionTypeId:
+                Category: Source
+                Owner: ThirdParty
+                Provider: GitHub
+                Version: "1"
+              RunOrder: 1
+              Configuration:
+                Repo: !Ref LFGHRepo
+                Branch: !Ref LFGHBranch
+                OAuthToken: !Ref LFGHToken
+                Owner: !Ref LFGHUser
+                PollForSourceChanges: "true"
+              OutputArtifacts:
+                - Name: SourceArtifact
+              InputArtifacts: []
+              Region: "us-east-1"
+              Namespace: SourceVariables
+        - Name: Build
+          Actions:
+            - Name: Build
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              RunOrder: 1
+              Configuration:
+                ProjectName: "lambda-pipeline-build"
+              OutputArtifacts:
+                - Name: BuildArtifact
+              InputArtifacts:
+                - Name: SourceArtifact
+              Region: "us-east-1"
+              Namespace: BuildVariables
+        - Name: Deploy
+          Actions:
+            - Name: Deploy
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: CloudFormation
+                Version: "1"
+              RunOrder: 1
+              Configuration:
+                ActionMode: CHANGE_SET_REPLACE
+                Capabilities: CAPABILITY_IAM,CAPABILITY_AUTO_EXPAND
+                ChangeSetName: "CC-hw3changeset"
+                RoleArn: !GetAtt AdminRole.Arn
+                StackName: "CC-hw3stack"
+                TemplatePath: BuildArtifact::outputsamtemplate.yml
+              OutputArtifacts: []
+              InputArtifacts:
+                - Name: BuildArtifact
+              Region: us-east-1
+              Namespace: DeployVariables
+
+  PipelineS3:
+    Type: "AWS::CodePipeline::Pipeline"
+    Properties:
+      RoleArn: !GetAtt AdminRole.Arn
+      ArtifactStore:
+        Type: S3
+        Location: !Ref S3ForArtifact
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: Source
+              ActionTypeId:
+                Category: Source
+                Owner: ThirdParty
+                Version: 1
+                Provider: GitHub
+              Configuration:
+                Repo: !Ref S3GHRepo
+                Owner: !Ref S3GHUser
+                Branch: !Ref S3GHBranch
+                OAuthToken: !Ref S3GHToken
+                PollForSourceChanges: false
+              OutputArtifacts:
+                - Name: SourceArtifact
+              RunOrder: 1
+
+        - Name: Deploy
+          Actions:
+            - Name: Deploy
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Version: 1
+                Provider: S3
+              Configuration:
+                BucketName: !Ref S3Frontend
+                Extract: true
+              InputArtifacts:
+                - Name: SourceArtifact
+              RunOrder: 1
+
+  ES:
+    Type: "AWS::Elasticsearch::Domain"
+    Properties:
+      DomainName: "ccphotos"
+      AccessPolicies:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              AWS: "*"
+            Action: "es:*"
+            Resource: "arn:aws:es:us-east-1:418888549033:domain/ccphotos/*"
+      ElasticsearchClusterConfig:
+        DedicatedMasterEnabled: "false"
+        InstanceCount: "1"
+        ZoneAwarenessEnabled: "false"
+        InstanceType: "t2.small.elasticsearch"
+      EBSOptions:
+        EBSEnabled: true
+        Iops: 0
+        VolumeSize: 10
+        VolumeType: "gp2"
+      ElasticsearchVersion: "7.1"
+
